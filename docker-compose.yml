@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  client:
+    build:
+      context: ./client
+    container_name: market-assistant-client
+    ports:
+      - "8080:80"
+    networks:
+      - market-assistant-network
+    environment:
+      - API_URL=http://localhost:8101
+
+  product-api:
+    build:
+      context: ./database
+    container_name: market-assistant-product-api
+    ports:
+      - "8100:8100"
+    environment:
+      - DB_PORT=8100
+      - DATABASE_URL=http://localhost:8100
+      - SUPABASE_URL=http://host.docker.internal:54321
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - market-assistant-network
+
+  main-api:
+    build:
+      context: .
+    container_name: market-assistant-main-api
+    ports:
+      - "8101:8101"
+    environment:
+      - DB_PORT=8100
+      - API_PORT=8101
+      - DATABASE_URL=http://product-api:8100  # Changed from localhost to service name
+      - API_URL=http://localhost:8101
+      - DEFAULT_MODEL=qwen2.5:7b
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - CORS_ORIGINS=http://localhost:8080
+    depends_on:
+      - product-api
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - market-assistant-network
+
+networks:
+  market-assistant-network:
+    driver: bridge

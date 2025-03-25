@@ -1,0 +1,11 @@
+import os
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+# Carica le variabili d'ambiente dal file .env
+load_dotenv()
+
+# Ottieni le credenziali dalle variabili d'ambiente
+url = os.environ.get("SUPABASE_URL")
+key = os.environ.get("SUPABASE_KEY")
+supabase: Client = create_client(str(url), str(key))

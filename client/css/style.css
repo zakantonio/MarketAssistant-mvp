@@ -1,0 +1,330 @@
+/* ---------------------- Page-01 ---------------------- */
+.dida {
+    position: fixed;
+    display: flex;
+    top: 0;
+    width: 100vw;
+    padding: 1vw;
+    margin-top: -1vh;
+}
+
+.colum01 {
+    text-align: left;
+    width: 50%;
+}
+
+.colum02 {
+    position: fixed;
+    right: 0;
+    width: auto;
+    position: fixed;
+    padding-right: 1vw;
+    text-align: right;
+}
+
+.dida p {
+    font-size: var(--font-text);
+    color: var(--fourth-color);
+}
+
+/* Logo Section */
+.logo,
+.container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.logo img {
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.logo img:hover {
+    transform: scale(1.1);
+}
+
+.logo p,
+.container p {
+    color: var(--secondary-color);
+    font-size: var(--font-dida);
+    display: flex;
+    justify-content: center;
+}
+
+.logo p {
+    padding-top: 25vh;
+}
+
+.placeholder {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30vw;
+    max-width: 180px;
+    aspect-ratio: 1/1;
+    background-color: var(--secondary-color);
+    border-radius: 25%;
+    cursor: pointer;
+    display: flex;
+    color: var(--primary-color);
+    font-size: var(--font-text);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Scrollable Section */
+.scroll-wrapper {
+    position: fixed;
+    bottom: 0;
+    width: 97vw;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 1vw;
+    border-radius: 1.5vw;
+    scrollbar-width: none;
+}
+
+.scroll-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.scroll-container {
+    display: flex;
+    gap: 1.5vw;
+}
+
+/* Card Component */
+.card {
+    flex: 0 0 auto;
+    height: 34vw;
+    max-height: 200px;
+    aspect-ratio: 4/5;
+    background-color: #d9d9d9;
+    border-radius: 2vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1vw;
+}
+
+.card.selected, .cardSmall.selected, .home.selected {
+    border: 3px solid var(--secondary-color);
+    transform: scale(1.0);
+}
+
+.card img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 2vw;
+    margin-top: 35px;
+    object-fit: cover;
+    background-color: #fff;
+}
+
+.card p {
+    font-size: var(--font-text);
+    margin-top: 1.5vw;
+    color: var(--fourth-color);
+}
+
+/* ---------------------- Page-02 ---------------------- */
+/* Img container */
+.image-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30vw;
+    aspect-ratio: 1/1;
+    max-width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#recordButton {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1/1;
+    max-width: 180px;
+    max-height: 180px;
+    background-color: var(--secondary-color);
+    border-radius: 25%;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.image-container img {
+    width: 30%;
+    object-fit: cover;
+    position: relative;
+    max-width: 60px;
+    z-index: 2; /* Place above the rotating button */
+}
+
+#instruction {
+    padding-top: 30vh;
+}
+
+#errorText {
+    padding-top: 28vh;
+    white-space: pre-line;
+    text-align: center;
+}
+
+/* Card Component */
+.cardSmall {
+    flex: 0 0 auto;
+    width: 21vw;
+    height: 2vw;
+    max-width: 200px;
+    background-color: #d9d9d9;
+    border-radius: 3vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2vw;
+}
+
+.cardSmall p {
+    font-size: var(--font-text);
+    color: var(--fourth-color);
+}
+
+
+/* ---------------------- Page-03 ---------------------- */
+.container01 {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding-top: 5vh;
+}
+
+.container-map {
+    width: 98vw;
+    aspect-ratio: 1/1;
+    background-color: #fff;
+    border-radius: 5vw;
+    object-fit: fill;
+    margin: 1vw;
+}
+
+.container-map img {
+    position: absolute;
+    top: 0;
+    padding-top: 5vh;
+}
+
+.aisles {
+    position: absolute;
+    top: 0;
+    width: 98vw;
+    padding-top: 5vh;
+}
+
+.aisles img {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 98vw;
+    padding-top: 5vh;
+}
+
+#title {
+    font-size: var(--font-title);
+    color: var(--third-color);
+}
+
+#description {
+    font-size: var(--font-text);
+    color: var(--fourth-color);
+    margin-top: -2vh;
+    margin-bottom: 3vh;
+}
+
+.product-table-container {
+    width: 98vw;
+    margin: 1vw;
+    font-size: var(--font-text);
+    color: var(--third-color);
+    padding-top: 5vh;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.product-table th,
+.product-table td {
+    padding: 1vw;
+    text-align: left;
+    border-bottom: 0.2vw solid var(--fourth-color);
+}
+
+.product-table th {
+    background-color: #f2f2f2;
+}
+
+.product-details-toggle {
+    cursor: pointer;
+    color: #0066cc;
+    text-decoration: underline;
+}
+
+.footer {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    bottom: 0;
+    width: 97vw;
+    padding: 1vw;
+    border-radius: 1.5vw;
+}
+
+.home {
+    flex: 0 0 auto;
+    width: 30vw;
+    height: 5vw;
+    background-color: #d9d9d9;
+    border-radius: 3vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 1vw;
+    position: relative;
+    max-width: 300px;
+}
+
+.home img {
+    width: 4vw;
+    max-width: 30px;
+    aspect-ratio: 1/1;
+    margin-right: 1vw;
+}
+
+.home p {
+    font-size: var(--font-text);
+    color: var(--fourth-color);
+}
+
+.colum-center {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+#connection-status {
+    font-size: var(--font-text);
+    color: var(--fourth-color);
+}

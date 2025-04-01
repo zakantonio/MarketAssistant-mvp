@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Market Assistant</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div style="display: none;">
+        <h1>Market Assistant</h1>
+
+        <div class="chat-container" id="chatContainer"></div>
+
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Scrivi un messaggio..." disabled>
+            <button id="sendButton" disabled>Invia</button>
+        </div>
+        <div class="status" id="status">Disconnesso</div>
+    </div>
+
+    <!-- page-01 -->
+    <div id="page-01">
+        <div class="dida">
+            <div class="colum01">
+                <p id="date">clock</p>
+            </div>
+            <div class="colum-center">
+                <p id="connection-status">Disconnesso</p>
+            </div>
+            <div class="colum02">
+                <p id="clock">date</p>
+            </div>
+        </div>
+        <div class="logo">
+            <div>
+                <div class="placeholder" id="activateButton">
+                    LOGO
+                </div>
+                <p id="">CLICCA PER ATTIVARE</p>
+            </div>
+        </div>
+        <div class="scroll-wrapper">
+            <div  id="scrollContainer" class="scroll-container"></div>
+        </div>
+    </div>
+
+    <!-- page-02 -->
+    <div id="page-02">
+        <div class="dida">
+            <div class="colum01">
+                <p id="date">date</p>
+            </div>
+            <div class="colum02">
+                <p id="clock">clock</p>
+            </div>
+        </div>
+        <div class="container">
+            <div>
+                <div id="recordButtonContainer" class="image-container">
+                    <div id="recordButton"></div>
+                    <img src="assets/icons/microphone.svg" alt="microphone" id="microphone">
+                </div>
+                <p id="instruction">PREMI QUI PER CHIEDERE</p>
+                <p id="errorText"></p>
+            </div>
+            <div class="scroll-wrapper">
+                <div id="scrollContainerSmall" class="scroll-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- page-03 -->
+    <div id="page-03">
+        <div class="dida">
+            <div class="colum01">
+                <p id="date">date</p>
+            </div>
+            <div class="colum02">
+                <p id="clock">clock</p>
+            </div>
+        </div>
+        
+        <!-- Tabella prodotti -->
+        <div class="product-table-container" id="productTableContainer">
+            <p id="title"></p>
+            <p id="description"></p>
+            <table class="product-table" id="productTable">
+                <tbody id="productTableBody">
+                </tbody>
+            </table>
+        </div>
+        <div class="footer">
+            <div class="home selected" id="home">
+                <img src="assets/icons/home.svg" alt="">
+                <p>HOME</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/env.js"></script>
+    <script src="js/socket.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

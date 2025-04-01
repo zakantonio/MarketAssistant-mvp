@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+websockets
+python-multipart
+requests
+json-repair
+python-dotenv
+crewai
+ollama

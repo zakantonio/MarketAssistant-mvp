@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+  client:
+    build:
+      context: ./client
+    container_name: market-assistant-client
+    ports:
+      - "8080:80"
+    networks:
+      - market-assistant-network
+    environment:
+      - API_URL=http://main-api:8101
+
+  product-api:
+    build:
+      context: ./database
+    container_name: market-assistant-product-api
+    ports:
+      - "8100:8100"
+    environment:
+      - DB_PORT=8100
+      - DATABASE_URL=http://localhost:8100
+      - SUPABASE_URL=http://host.docker.internal:54321
+      - SUPABASE_KEY=<SUPABASE_KEY>
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - market-assistant-network
+
+  whisper-service:
+    build:
+      context: ./whisper-service
+    container_name: market-assistant-whisper
+    ports:
+      - "8102:8102"
+    environment:
+      - FORCE_CPU=false  # Set to true to force CPU usage
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - ./whisper-models:/root/.cache/huggingface  # Persistent storage for models
+    # GPU support configuration
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - market-assistant-network
+
+  main-api:
+    build:
+      context: ./chatbot
+    container_name: market-assistant-main-api
+    ports:
+      - "8101:8101"
+    environment:
+      - DB_PORT=8100
+      - API_PORT=8101
+      - DEFAULT_MODEL=qwen2.5:7b
+      - API_URL=http://main-api:8101
+      - CORS_ORIGINS=http://localhost:8080
+      - DATABASE_URL=http://product-api:8100
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - WHISPER_SERVICE_URL=http://whisper-service:8102
+    depends_on:
+      - product-api
+      - whisper-service
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - market-assistant-network
+
+networks:
+  market-assistant-network:
+    driver: bridge

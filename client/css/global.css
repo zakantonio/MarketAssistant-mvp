@@ -1,0 +1,88 @@
+:root {
+    /* Color Palette */
+    --primary-color: #e5e7eb;
+    --secondary-color: #e10f22;
+    --third-color: #000;
+    --fourth-color: #abacae;
+
+    /* Default Font Sizes */
+    --font-title: clamp(1.8rem, 5vw, 4rem);
+    --font-text: clamp(1rem, 2.5vw, 2rem);
+    --font-dida: clamp(0.8rem, 2vw, 1.5rem);
+
+    /* Layout */
+    --table-width: 70vw;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--primary-color);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    overflow: hidden;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Responsive Variables */
+@media (max-width: 768px) {
+    :root {
+        --font-title: 8vw;
+        --font-text: 4vw;
+        --font-dida: 3.5vw;
+        --table-width: 90vw;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    :root {
+        --font-title: 6vw;
+        --font-text: 2.8vw;
+        --font-dida: 2.5vw;
+        --table-width: 75vw;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1279px) {
+    :root {
+        --font-title: 6vw;
+        --font-text: 3vw;
+        --font-dida: 2vw;
+        --table-width: 50vw;
+    }
+}
+
+@media (min-width: 1280px) {
+    :root {
+        --font-title: 3vw;
+        --font-text: 2rem;
+        --font-dida: 1.4vw;
+        --table-width: 50vw;
+    }
+
+    /* Card Component */
+    .card img {
+        width: 100%;
+        aspect-ratio: 1/1;
+        border-radius: 2vw;
+        object-fit: cover;
+        background-color: #fff;
+        margin-top: 2vw !important;
+    }
+    .card p {
+        margin-top: 0.5vw !important;
+    }
+
+    #errorText {
+        padding-top: 75vh;
+        white-space: pre-line;
+        text-align: center;
+    }
+}

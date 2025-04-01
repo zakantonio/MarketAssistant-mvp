@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .chat-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 8px;
+        }
+        button {
+            padding: 8px 15px;
+        }
+        .status {
+            margin-top: 10px;
+            color: #666;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #e6f7ff;
+            text-align: right;
+        }
+        .assistant-message {
+            background-color: #f0f0f0;
+        }
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+    
+        .product-table-container {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .product-table th, .product-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .product-table th {
+            background-color: #f2f2f2;
+        }
+        
+        .product-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .product-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .product-details-toggle {
+            cursor: pointer;
+            color: #0066cc;
+            text-decoration: underline;
+        }
+        
+        .product-details {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Market Assistant</h1>
+    
+    <div class="chat-container" id="chatContainer"></div>
+    
+    <div class="input-container">
+        <input type="text" id="messageInput" placeholder="Scrivi un messaggio..." disabled>
+        <button id="sendButton" disabled>Invia</button>
+        <button id="recordButton" disabled>🎤</button>
+    </div>
+    
+    <div class="status" id="status">Disconnesso</div>
+    
+    <!-- Tabella prodotti -->
+    <div class="product-table-container" id="productTableContainer">
+        <h3>Prodotti trovati</h3>
+        <table class="product-table" id="productTable">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Posizione</th>
+                    <th>Dettagli</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                <!-- I dati dei prodotti verranno inseriti qui dinamicamente -->
+            </tbody>
+        </table>
+    </div>
+    
+    <script src="../js/utils.js"></script>
+    <script src="../js/env.js"></script>
+    <script src="socket.js"></script>
+    <script>
+        const client = new MarketAssistantClient(getWebSocketUrl());
+        const chatContainer = document.getElementById('chatContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const recordButton = document.getElementById('recordButton');
+        const statusElement = document.getElementById('status');
+        
+        function addMessage(text, type) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.classList.add(`${type}-message`);
+            messageElement.textContent = text;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function displayProductTable(products) {
+            const tableContainer = document.getElementById('productTableContainer');
+            const tableBody = document.getElementById('productTableBody');
+            
+            tableBody.innerHTML = '';
+            
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                
+                const nameCell = document.createElement('td');
+                nameCell.textContent = product.name;
+                row.appendChild(nameCell);
+                
+                const locationCell = document.createElement('td');
+                const location = product.location;
+                locationCell.innerHTML = `
+                    <strong>Corsia:</strong> ${location.aisle || 'N/A'}<br>
+                    <strong>Sezione:</strong> ${location.section || 'N/A'}<br>
+                    <strong>Scaffale:</strong> ${location.shelf || 'N/A'}
+                `;
+                row.appendChild(locationCell);
+                
+                const detailsCell = document.createElement('td');
+                const details = product.details;
+                detailsCell.innerHTML = `
+                    <div class="product-details-toggle" onclick="toggleDetails(this)">Mostra dettagli</div>
+                    <div class="product-details">
+                        <strong>Categoria:</strong> ${details.category || 'N/A'}<br>
+                        <strong>Descrizione:</strong> ${details.description || 'N/A'}<br>
+                        <strong>Prezzo:</strong> ${details.price || 'N/A'}<br>
+                        <strong>Marca:</strong> ${details.brand || 'N/A'}<br>
+                    </div>
+                `;
+                row.appendChild(detailsCell);
+                
+                tableBody.appendChild(row);
+            });
+            
+            tableContainer.style.display = 'block';
+            
+            tableContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function toggleDetails(element) {
+            const detailsDiv = element.nextElementSibling;
+            if (detailsDiv.style.display === 'block') {
+                detailsDiv.style.display = 'none';
+                element.textContent = 'Mostra dettagli';
+            } else {
+                detailsDiv.style.display = 'block';
+                element.textContent = 'Nascondi dettagli';
+            }
+        }
+        
+        client.addListener('text_response', (data) => {
+            addMessage(data.content, 'assistant');
+        });
+
+        client.addListener('table_response', (data) => {
+            if (data.content && data.content.products && data.content.products.length > 0) {
+                displayProductTable(data.content.products);
+            } else {
+                document.getElementById('productTableContainer').style.display = 'none';
+            }
+        });
+        
+        client.addListener('audio_response', (data) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', 'assistant-message');
+            
+            const textSpan = document.createElement('span');
+            textSpan.textContent = "audio";
+            
+            const playButton = document.createElement('button');
+            playButton.innerHTML = '🔊';
+            playButton.style.marginLeft = '10px';
+            playButton.onclick = () => {
+                const audio = new Audio('data:audio/wav;base64,' + data.content);
+                audio.play();
+            };
+            
+            messageDiv.appendChild(textSpan);
+            messageDiv.appendChild(playButton);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+        client.addListener('error', (data) => {
+            addMessage(data.content || data.error || 'Errore sconosciuto', 'error');
+        });
+        
+        client.addListener('connect', () => {
+            statusElement.textContent = 'Connesso';
+            messageInput.disabled = false;
+            sendButton.disabled = false;
+            recordButton.disabled = false;
+        });
+        
+        client.addListener('disconnect', () => {
+            statusElement.textContent = 'Disconnesso';
+            messageInput.disabled = true;
+            sendButton.disabled = true;
+            recordButton.disabled = true;
+        });
+        
+        client.connect()
+            .then(clientId => {
+                statusElement.textContent = `Connesso (ID: ${clientId})`;
+            })
+            .catch(error => {
+                statusElement.textContent = `Errore di connessione: ${error.message}`;
+                addMessage(`Errore di connessione: ${error.message}`, 'error');
+            });
+        
+        sendButton.addEventListener('click', () => {
+            const text = messageInput.value.trim();
+            if (text) {
+                addMessage(text, 'user');
+                client.sendText(text);
+                messageInput.value = '';
+            }
+        });
+        
+        messageInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+        
+        let mediaRecorder;
+        let audioChunks = [];
+        
+        recordButton.addEventListener('mousedown', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.addEventListener('dataavailable', (event) => {
+                    audioChunks.push(event.data);
+                });
+                
+                mediaRecorder.start();
+                recordButton.textContent = '🔴';
+            } catch (error) {
+                console.error('Errore accesso al microfono:', error);
+                addMessage(`Errore accesso al microfono: ${error.message}`, 'error');
+            }
+        });
+        
+        recordButton.addEventListener('mouseup', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                recordButton.textContent = '🎤';
+                
+                mediaRecorder.addEventListener('stop', async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const reader = new FileReader();
+                    
+                    reader.onloadend = () => {
+                        const base64Audio = reader.result.split(',')[1];
+                        addMessage('Messaggio vocale inviato', 'user');
+                        client.sendAudio(base64Audio);
+                    };
+                    
+                    reader.readAsDataURL(audioBlob);
+                    
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                });
+            }
+        });
+        
+        window.addEventListener('beforeunload', () => {
+            client.disconnect();
+        });
+    </script>
+</body>
+</html>
